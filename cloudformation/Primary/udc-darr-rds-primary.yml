@@ -24,7 +24,7 @@ Parameters:
       - "db.t3.medium"
   DBSecurityGroup:
     Description: The Security group of the RDS instance
-    Type: AWS::EC2::SecurityGroup::GroupName
+    Type: AWS::EC2::SecurityGroup::Id
   DBPwd: 
     NoEcho: true
     Description: The database admin account password
@@ -42,18 +42,6 @@ Parameters:
     Description: The name of the RDS databse
     Type: String
     Default: "udacityaws"
-  MonitoringInterval:
-    Description: Monitoring Interval for RDS Instance
-    Type: Number
-    Default: 60
-    AllowedValues:
-      - 0
-      - 1
-      - 5
-      - 10
-      - 15
-      - 30
-      - 60
 Resources:
   RDSSubNetGroup:
     Type: AWS::RDS::DBSubnetGroup
@@ -75,16 +63,9 @@ Resources:
       DBInstanceIdentifier: !Ref DBName
       DBName: !Ref DBName
       DBSubnetGroupName: !Ref RDSSubNetGroup
-      EnableCloudwatchLogsExports: 
-        - audit
-          error
-          general
-          slowquery
-      EnablePerformanceInsights: true
       Engine: "mysql"
       MasterUsername: !Ref DBName
       MasterUserPassword: !Ref DBPwd
-      MonitoringInterval: !Ref MonitoringInterval
       MultiAZ: true
       Port: !Ref DBPort
       PubliclyAccessible: false
