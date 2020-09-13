@@ -57,10 +57,9 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       DBInstanceIdentifier: !Ref DBName
       DBName: !Ref DBName
-      DBSubnetGroupName: RDSSubNetGroup
+      DBSubnetGroupName: !Ref RDSSubNetGroup
       Engine: "mysql"
-      MultiAZ: true
-      OptionGroupName: String
+      MultiAZ: false
       Port: !Ref DBPort
       PubliclyAccessible: false
       SourceDBInstanceIdentifier: !Ref SourceDB
