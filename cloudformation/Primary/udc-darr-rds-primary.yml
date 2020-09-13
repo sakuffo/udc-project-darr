@@ -86,10 +86,7 @@ Resources:
       MasterUserPassword: !Ref DBPwd
       MonitoringInterval: !Ref MonitoringInterval
       MultiAZ: true
-      OptionGroupName: String
       Port: !Ref DBPort
-      PreferredBackupWindow: String
-      PreferredMaintenanceWindow: String
       PubliclyAccessible: false
       StorageType: "gp2"
       Tags: 
