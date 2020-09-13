@@ -1,0 +1,55 @@
+Parameters:
+  EC2KeyPair:
+    Description: Amazon EC2 Key Pair
+    Type: AWS::EC2::KeyPair::KeyName
+  VpcId:
+    Description: Enter the VpcId
+    Type: AWS::EC2::VPC::Id
+  SubnetIds:
+    Description: Enter the Subnets
+    Type: List<AWS::EC2::Subnet::Id>
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0c94855ba95c71c99
+    us-west-2:
+      AMI: ami-0841edc20334f9287
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AdditionalInfo: String
+      Affinity: String
+      CreditSpecification: CreditSpecification
+      DisableApiTermination: Boolean
+      ImageId: String
+      InstanceInitiatedShutdownBehavior: String
+      InstanceType: String
+      Ipv6AddressCount: Integer
+      Ipv6Addresses:
+        - InstanceIpv6Address
+      KernelId: String
+      KeyName: String
+      LaunchTemplate: LaunchTemplateSpecification
+      LicenseSpecifications:
+        - LicenseSpecification
+      Monitoring: Boolean
+      NetworkInterfaces:
+        - NetworkInterface
+      PlacementGroupName: String
+      PrivateIpAddress: String
+      RamdiskId: String
+      SecurityGroupIds:
+        - String
+      SecurityGroups:
+        - String
+      SourceDestCheck: Boolean
+      SsmAssociations:
+        - SsmAssociation
+      SubnetId: String
+      Tags:
+        - Tag
+      Tenancy: String
+      UserData: String
+      Volumes:
+        - Volume
