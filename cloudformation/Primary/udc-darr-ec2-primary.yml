@@ -1,13 +1,27 @@
 Parameters:
+  EC2InstanceName:
+    Description: The Name of the instance
+    Type: String
   EC2KeyPair:
     Description: Amazon EC2 Key Pair
     Type: AWS::EC2::KeyPair::KeyName
-  VpcId:
-    Description: Enter the VpcId
-    Type: AWS::EC2::VPC::Id
-  SubnetIds:
+  SubnetId:
     Description: Enter the Subnets
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: AWS::EC2::Subnet::Id
+  SecurityGroupId:
+    Description: Enter the Subnets
+    Type: AWS::EC2::SecurityGroup::Id
+  InstanceClass:
+    Description: The instance class of the RDS instance
+    Type: String
+    Default: "t2.micro"
+    AllowedValues:
+      - "t2.micro"
+      - "t2.small"
+      - "t2.medium"
+      - "t3.micro"
+      - "t3.small"
+      - "t3.medium"
 Mappings:
   RegionMap:
     us-east-1:
@@ -17,39 +31,33 @@ Mappings:
 Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
+    Metadata: 
+      AWS::CloudFormation::Init:
+        config: 
+          packages: 
+            yum:
+              mysql: []
     Properties:
-      AdditionalInfo: String
-      Affinity: String
-      CreditSpecification: CreditSpecification
-      DisableApiTermination: Boolean
-      ImageId: String
-      InstanceInitiatedShutdownBehavior: String
-      InstanceType: String
-      Ipv6AddressCount: Integer
-      Ipv6Addresses:
-        - InstanceIpv6Address
-      KernelId: String
-      KeyName: String
-      LaunchTemplate: LaunchTemplateSpecification
-      LicenseSpecifications:
-        - LicenseSpecification
-      Monitoring: Boolean
-      NetworkInterfaces:
-        - NetworkInterface
-      PlacementGroupName: String
-      PrivateIpAddress: String
-      RamdiskId: String
-      SecurityGroupIds:
-        - String
-      SecurityGroups:
-        - String
-      SourceDestCheck: Boolean
-      SsmAssociations:
-        - SsmAssociation
-      SubnetId: String
       Tags:
-        - Tag
-      Tenancy: String
-      UserData: String
-      Volumes:
-        - Volume
+        - Key: Name
+          Value: !Ref EC2InstanceName
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      InstanceType: !Ref InstanceClass
+      KeyName: !Ref EC2KeyPair
+      Monitoring: true
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      SubnetId: !Ref SubnetId 
+      UserData:
+        'Fn::Base64': 
+          !Sub |
+            #!/bin/bash -xe            
+            # Ensure AWS CFN Bootstrap is the latest
+            yum install -y aws-cfn-bootstrap
+            # Install the files and packages from the metadata
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource EC2Instance  --region ${AWS::Region}
+  
