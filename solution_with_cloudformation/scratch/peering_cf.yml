@@ -1,6 +1,6 @@
 Parameters:
-  SourceVPCId:
-    Description: Select the source VPC-ID
+  SourceVPC:
+    Description: Select the source VPC
     Type: AWS::EC2::VPC::Id
   SourceVPCCIDRRange:
     Description: The CIDR Range of Source VPC
@@ -16,8 +16,8 @@ Parameters:
     Description: The Peer VPC Region
     Type: String
     AllowedValues:
-      - us-east-1
-      - us-west-2
+      - 'us-east-1'
+      - 'us-west-2'
   PeerVPCCIDRRange:
     Description: The CIDR Range of Source VPC
     Type: String
@@ -32,24 +32,4 @@ Resources:
     Properties: 
       PeerRegion: !Ref PeerVPCRegion
       PeerVpcId: !Ref PeerVPC
-      VpcId: !Ref SourceVPCId
-  SourcePeeringRT:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref SourceVPCId
-  PeeringRouteSource:
-    Type: 'AWS::EC2::Route'
-    Properties:
-      DestinationCidrBlock: !Ref PeerVPCCIDRRange
-      RouteTableId: !Ref SourcePeeringRT
-      VpcPeeringConnectionId: !Ref PeeringConnection
-  PeerPeeringRT:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref PeerVPC
-  PeeringRoutePeer:
-    Type: AWS::EC2::Route
-    Properties:
-      DestinationCidrBlock: !Ref SourceVPCCIDRRange
-      RouteTableId: !Ref PeerPeeringRT
-      VpcPeeringConnectionId: !Ref PeeringConnection
+      VpcId: !Ref SourceVPC
