@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  SubnetIds:
+    Description: A name that is prefixed to resource names
+    Type: List<AWS::EC2::Subnet::Id>
+  DBSubnetGroupName:
+    Description: The Name of the DB Subnet Group
+    Type: String
+    Default: "saa-udc-darr-RDS-primarySbg"
+  DBSubnetGroupDescription:
+    Description: The Description of the DB Subnet Group
+    Type: String
+    Default: "The RDS subnet group for Primary VPC"
+  DBInstanceClass:
+    Description: The instance class of the RDS instance
+    Type: String
+    Default: "db.t2.micro"
+    AllowedValues:
+      - "db.t2.micro"
+      - "db.t2.small"
+      - "db.t2.medium"
+      - "db.t3.micro"
+      - "db.t3.small"
+      - "db.t3.medium"
+  DBSecurityGroup:
+    Description: The Security group of the RDS instance
+    Type: AWS::EC2::SecurityGroup::Id
+  DBPwd: 
+    NoEcho: true
+    Description: The database admin account password
+    Type: String
+    MinLength: 1
+    MaxLength: 41
+    AllowedPattern: ^[a-zA-Z0-9]*$
+  DBPort: 
+    Default: 3306
+    Description: TCP/IP port for the database
+    Type: Number
+    MinValue: 1150
+    MaxValue: 65535
+  DBName:
+    Description: The name of the RDS databse
+    Type: String
+    Default: "udacityaws"
+Resources:
+  RDSSubNetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: !Ref DBSubnetGroupDescription
+      DBSubnetGroupName: !Ref DBSubnetGroupName
+      SubnetIds: !Ref SubnetIds
+      Tags:
+        - Key: "CourseWork"
+          Value: "udc"
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties: 
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 7
+      DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: !Ref DBName
+      DBName: !Ref DBName
+      DBSubnetGroupName: !Ref RDSSubNetGroup
+      Engine: "mysql"
+      MasterUsername: !Ref DBName
+      MasterUserPassword: !Ref DBPwd
+      MultiAZ: true
+      Port: !Ref DBPort
+      PubliclyAccessible: false
+      StorageType: "gp2"
+      Tags: 
+        - Key: "CourseWorkType"
+          Value: "udc-project"
+      VPCSecurityGroups: 
+        - !Ref DBSecurityGroup

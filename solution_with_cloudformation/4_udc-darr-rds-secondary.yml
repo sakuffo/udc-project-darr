@@ -1,0 +1,75 @@
+Parameters:
+  SourceDB:
+    Description: Provide the arn of the source DB
+    Type: String
+  DBIdenName:
+    Description: The name of the RDS databse Identifier
+    Type: String
+    Default: "udacity"
+  DBName:
+    Description: The name of the source RDS databse
+    Type: String
+    Default: "udacity"
+  SubnetIds:
+    Description: A name that is prefixed to resource names
+    Type: List<AWS::EC2::Subnet::Id>
+  DBSubnetGroupName:
+    Description: The Name of the DB Subnet Group
+    Type: String
+    Default: "saa-udc-darr-RDS-secondarySbg"
+  DBSubnetGroupDescription:
+    Description: The Description of the DB Subnet Group
+    Type: String
+    Default: "The RDS subnet group for Secondary VPC"
+  DBInstanceClass:
+    Description: The instance class of the RDS instance
+    Type: String
+    Default: "db.t2.micro"
+    AllowedValues:
+      - "db.t2.micro"
+      - "db.t2.small"
+      - "db.t2.medium"
+      - "db.t3.micro"
+      - "db.t3.small"
+      - "db.t3.medium"
+  DBSecurityGroup:
+    Description: The Security group of the RDS instance
+    Type: AWS::EC2::SecurityGroup::Id
+  DBPort: 
+    Default: 3306
+    Description: TCP/IP port for the database
+    Type: Number
+    MinValue: 1150
+    MaxValue: 65535
+Resources:
+  RDSSubNetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: !Ref DBSubnetGroupDescription
+      DBSubnetGroupName: !Ref DBSubnetGroupName
+      SubnetIds: !Ref SubnetIds
+      Tags:
+        - Key: "CourseWork"
+          Value: "udc"
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties: 
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 7
+      DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: !Ref DBIdenName
+      DBName: !Ref DBName
+      DBSubnetGroupName: !Ref RDSSubNetGroup
+      Engine: "mysql"
+      MultiAZ: false
+      Port: !Ref DBPort
+      PubliclyAccessible: false
+      SourceDBInstanceIdentifier: !Ref SourceDB
+      StorageType: "gp2"
+      Tags: 
+        - Key: "CourseWorkType"
+          Value: "udc-project"
+      VPCSecurityGroups: 
+        - !Ref DBSecurityGroup
