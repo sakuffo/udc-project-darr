@@ -1,3 +1,2 @@
-./.gitignore
-/.gitignore
-./solution_with_cloudformation/wip_cf_templates/
+.gitignore
+/solution_with_cloudformation/wip_cf_templates/
