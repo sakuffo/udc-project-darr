@@ -41,7 +41,7 @@ Parameters:
   DBName:
     Description: The name of the RDS databse
     Type: String
-    Default: "udacityaws"
+    Default: "udacity"
 Resources:
   RDSSubNetGroup:
     Type: AWS::RDS::DBSubnetGroup
