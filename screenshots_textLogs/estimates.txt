@@ -1,0 +1,10 @@
+Primarily it would depend on what exactly failed. To go from least impactful to more impactful:
+If the secondary region (us-west-2) OR the az the replica sits in failed (since the replica is not multi-az), for the databse, no data would be 
+lost as the primary databse is up and recieving data. The RPO for that failure would be zero. The RTO would be about 15 minutes because while 
+there is no data loss and the primary DB is up, there are many cases a read replica could be used to increase DB performance. 
+Since a read replica takes abotu 15 minutes with a DB this size to be stood up, I would quote a RTO of 30 minutes.
+
+However, if the failure is in the primary side, again, depends on a few factors. If only a single AZ fails, according to AWS documentation,
+it takes about 60 to 120 seconds for the RDS to failover to it's standby (as the primary instance is multi-az). However if there are a large amount
+of lengthy transactions, this can increase the time. For safty I would estimate 15 minutes RTO and RPO.
+However, if the entire region failed, I would quote a 30 minute RPO and RTO as the read replica would have to be promoted to server write and read traffic.
